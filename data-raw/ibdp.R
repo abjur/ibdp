@@ -5,7 +5,6 @@ arquivos <- fs::dir_ls("data-raw/pgfn")
 
 # leitura e arrumacao -----------------------------------------------------
 
-
 pgfn_raw <- map_dfr(
   arquivos,
   read_delim,

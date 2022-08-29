@@ -1,20 +1,5 @@
----
-output: github_document
----
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include = FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%",
-  dpi = 300
-)
-
-library(tidyverse)
-```
 
 # ibdp
 
@@ -23,7 +8,7 @@ library(tidyverse)
 
 Materiais da apresentação no Congresso do IBDP.
 
-```{r}
+``` r
 # base será colocada nos releases.
 pgfn <- readr::read_rds("data-raw/pgfn.rds")
 ```
@@ -34,7 +19,7 @@ pgfn <- readr::read_rds("data-raw/pgfn.rds")
 
 Tipo de crédito
 
-```{r}
+``` r
 # tabela
 pgfn |>
   count(tipo_credito, sort = TRUE) |>
@@ -42,21 +27,42 @@ pgfn |>
   knitr::kable()
 ```
 
+| tipo_credito                           |       n | prop     |
+|:---------------------------------------|--------:|:---------|
+| OUTROS                                 | 5838365 | 98.3284% |
+| CONTRIBUICAO NAO REPASSADA             |   59766 | 1.0066%  |
+| AFERICAO INDIRETA                      |   32093 | 0.5405%  |
+| Não Informado                          |    3290 | 0.0554%  |
+| SOLIDARIEDADE                          |    1952 | 0.0329%  |
+| ARREMATACAO                            |    1138 | 0.0192%  |
+| SUCUMBENCIA                            |     583 | 0.0098%  |
+| RECLAMATORIA TRABALHISTA JUST TRABALHO |     416 | 0.0070%  |
+| NATUREZA NAO PREVIDENCIARIA            |      15 | 0.0003%  |
+
 Situação da inscrição
 
-```{r}
+``` r
 pgfn |>
   count(tipo_situacao_inscricao, sort = TRUE) |>
   mutate(prop = scales::percent(n / sum(n))) |>
   knitr::kable()
 ```
 
+| tipo_situacao_inscricao       |       n | prop    |
+|:------------------------------|--------:|:--------|
+| Em cobrança                   | 4756355 | 80.105% |
+| Benefício Fiscal              | 1165621 | 19.631% |
+| Garantia                      |    9556 | 0.161%  |
+| Suspenso por decisão judicial |    5093 | 0.086%  |
+| Em negociação                 |     993 | 0.017%  |
 
 ### Mapa
 
-```{r}
+``` r
 # mapa
 estados <- geobr::read_state(showProgress = FALSE)
+#> Loading required namespace: sf
+#> Using year 2010
 
 codigos <- estados |>
   as_tibble() |>
@@ -92,12 +98,13 @@ estados |>
   labs(
     title = "Dívida total / população"
   )
-
 ```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 ### No tempo
 
-```{r}
+``` r
 pgfn_mes <- pgfn |>
   mutate(data = lubridate::floor_date(data_inscricao, "month")) |>
   filter(data >= "2008-01-01") |>
@@ -112,17 +119,22 @@ pgfn_mes |>
     x = "Mês", y = "Quantidade (milhares)",
     title = "Quantidade de inscrições ao longo dos anos"
   )
-
-
 ```
 
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 ## Modelo
 
-```{r}
+``` r
 
 library(tsibble)
+#> 
+#> Attaching package: 'tsibble'
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, union
 library(fable)
+#> Carregando pacotes exigidos: fabletools
 
 
 pgfn_tsibble <- pgfn_mes |>
@@ -144,10 +156,11 @@ fit |>
     y = "Quantidade (milhares)",
     title = "Quantidade de inscrições ao longo dos anos"
   )
-
 ```
 
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
 ## Apresentação
 
-Link da apresentação [aqui](https://docs.google.com/presentation/d/1sFtU7FqHGEV7OOjBLaGT7dh5WQNL3EhuMOAf_p6y3zY/edit?usp=sharing).
+Link da apresentação
+[aqui](https://docs.google.com/presentation/d/1sFtU7FqHGEV7OOjBLaGT7dh5WQNL3EhuMOAf_p6y3zY/edit?usp=sharing).
